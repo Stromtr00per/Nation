@@ -1,0 +1,13 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "service": {
+    "build": {
+      "builderKey": "railway",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npm start"
+    },
+    "start": {
+      "startCommand": "npm start"
+    }
+  }
+}

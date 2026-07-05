@@ -9,3 +9,5 @@ dist/
 *.swo
 .vscode/
 .idea/
+server/dev.db
+*.db

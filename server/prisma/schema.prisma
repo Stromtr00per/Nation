@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime  @default(now())
+  workspaces Workspace[]
+  pages     Page[]
+  workspaceMembers WorkspaceMember[]
+}
+
+model Workspace {
+  id              String   @id @default(cuid())
+  name            String
+  ownerId         String
+  owner           User     @relation("UserOwnsWorkspace", fields: [ownerId], references: [id])
+  pages           Page[]
+  workspaceMembers WorkspaceMember[]
+}
+
+model WorkspaceMember {
+  id        String   @id @default(cuid())
+  workspaceId String
+  userId     String
+  role       Role    @default(MEMBER)
+  user       User
+  workspace  Workspace
+  @@unique([workspaceId, userId])
+}
+
+enum Role {
+  OWNER
+  MEMBER
+}
+
+model Page {
+  id          String   @id @default(cuid())
+  title       String
+  contentId   String
+  workspaceId String
+  workspace   Workspace @relation("WorkspaceHasPage", fields: [workspaceId], references: [id])
+  blocks      Block[]
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  contentId String
+  type      BlockType
+  content   Json
+  text      String?
+  parentId  String?
+  page      Page?    @relation("PageHasBlock", fields: [parentId], references: [id])
+}
+
+enum BlockType {
+  TEXT
+  HEADING_1
+  HEADING_2
+  HEADING_3
+  BULLETED_LIST
+  NUMBERED_LIST
+  TO_DO
+  IMAGE
+  CODE
+  EMBED
+  DATABASE
+}
